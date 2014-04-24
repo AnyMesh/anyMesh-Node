@@ -1,0 +1,15 @@
+<h1>Test!</h1>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://localhost:5555');
+
+
+   socket.on("message", function(msg){
+       console.log(msg);
+   });
+
+
+
+</script>
