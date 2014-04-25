@@ -1,6 +1,11 @@
-function MeshUdp (message, broadcastPort) {
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
+
+function MeshUdp (message, udpPort) {
+    var self = this;
+
     this.message = message;
-    this.broadcastPort = broadcastPort;
+    this.udpPort = udpPort;
 
     var ip = require("ip");
     var dgram=require("dgram");
@@ -9,33 +14,26 @@ function MeshUdp (message, broadcastPort) {
     this.udp_client = dgram.createSocket("udp4");
 
     this.udp_server.on("message", function (msg, rinfo) {
-        if (rinfo.address != ip.address()){
-            //console.log("server got: " + msg + " from " + rinfo.address + ":" + rinfo.port);
-
-            //connect to remote tcp server
-            if(servers.length == 0) {
-                newServer = net.connect({"address":rinfo.address, "port":12346});
-                servers.push(newServer);
-            }
+       if (rinfo.address != ip.address()){
+            console.log("server got: " + msg + " from " + rinfo.address + ":" + rinfo.port);
+           var info = JSON.parse(msg);
+           info.address = rinfo.address;
+            self.emit('received', info);
         };
     });
 
-    this.udp_server.bind(12345);
+    this.udp_server.bind(udpPort);
     this.udp_client.bind();
-
-    console.log("finished init for MeshUDP");
 }
 
-MeshUdp.prototype.receivedMessage = function(msg) {
-    console.log("original function not replaced!");
-}
+util.inherits(MeshUdp, EventEmitter);
 
 MeshUdp.prototype.startBroadcasting = function () {
     var self = this;
     setInterval(function () {
         var buffer = new Buffer(self.message);
         self.udp_client.setBroadcast(true);
-        self.udp_client.send(buffer, 0, buffer.length, self.broadcastPort, "255.255.255.255");
+        self.udp_client.send(buffer, 0, buffer.length, self.udpPort, "255.255.255.255");
     }, 3000);
 }
 
