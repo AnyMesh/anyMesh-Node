@@ -31,7 +31,7 @@ function MeshTcp (tcpPort) {
             clients.splice(clients.indexOf(socket), 1);
         });
     });
-    this.tcp_server.listen(tcpPort);
+    this.tcp_server.listen(tcpPort, '0.0.0.0');
 }
 util.inherits(MeshTcp, EventEmitter);
 
