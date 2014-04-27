@@ -15,7 +15,6 @@ function MeshUdp (message, udpPort) {
 
     this.udp_server.on("message", function (msg, rinfo) {
        if (rinfo.address != ip.address()){
-            console.log("server got: " + msg + " from " + rinfo.address + ":" + rinfo.port);
            var info = JSON.parse(msg);
            info.address = rinfo.address;
             self.emit('received', info);

@@ -3,7 +3,9 @@
     "version" : "0.0.1",
     "description" : "node component for anyShow, a scalable, decentralized embedded show controller for Raspberry Pi",
     "dependencies" : {
-        "socket.io": "*",
-        "ip": "*"
+        "ip": "*",
+        "prompt": "*",
+        "underscore": "*",
+        "json-socket": "*"
     }
 }
