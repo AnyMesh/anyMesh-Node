@@ -40,7 +40,7 @@ MeshTcp.prototype.addConnection = function (info) {
     if(servers[info.name] == undefined) {
         console.log("trying to connect to " + info.address);
         var newServer = new JsonSocket(new net.Socket());
-        newServer.connect({"address":info.address, "port":this.tcpPort}, function() {
+        newServer.connect(this.tcpPort, info.address, function() {
             newServer.info = info;
             servers[info.name] = newServer;
 
