@@ -2,20 +2,11 @@ var MeshNode = require("./MeshNode");
 var prompt = require("prompt");
 
 var meshNode = new MeshNode();
-meshNode.bind('published', function(message){
-    console.log("PUBLISHED from " + message.info.name);
+meshNode.received = function(message) {
+    console.log("RECEIVED from " + message.info.name);
     console.log(message);
-});
-meshNode.bind('requested', function(message){
-    console.log("REQUESTED from " + message.info.name);
-    console.log(message);
+};
 
-    message.respondWith(JSON.parse({"msg":"got it!"}));
-});
-meshNode.bind('responded', function(message){
-    console.log("RESPONSE from " + message.info.name);
-    console.log(message);
-});
 
 
 var promptInfo = {
@@ -37,7 +28,6 @@ prompt.get(promptInfo, function (err, result) {
     console.log(result.listensTo);
 
     meshNode.connect(result.name, result.listensTo);
-
     promptForMessage();
 });
 

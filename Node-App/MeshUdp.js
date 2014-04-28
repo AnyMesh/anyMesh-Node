@@ -23,6 +23,8 @@ function MeshUdp (message, udpPort) {
 
     this.udp_server.bind(udpPort);
     this.udp_client.bind();
+
+    return this;
 }
 
 util.inherits(MeshUdp, EventEmitter);

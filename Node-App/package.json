@@ -6,7 +6,6 @@
         "ip": "*",
         "prompt": "*",
         "underscore": "*",
-        "json-socket": "*",
-        "microevent": "*"
+        "json-socket": "*"
     }
 }

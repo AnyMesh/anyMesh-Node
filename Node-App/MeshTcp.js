@@ -34,6 +34,8 @@ function MeshTcp (tcpPort) {
         });
     });
     this.tcp_server.listen(tcpPort, '0.0.0.0');
+
+    return this;
 }
 util.inherits(MeshTcp, EventEmitter);
 
@@ -47,7 +49,7 @@ MeshTcp.prototype.addConnection = function (info) {
             servers[info.name] = newServer;
 
             console.log("added new server connection");
-            console.log(servers);
+            console.log(info.name);
         });
     }
 };
