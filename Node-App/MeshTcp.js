@@ -3,12 +3,13 @@ var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var _ = require("underscore");
 var JsonSocket = require('json-socket');
-
+var MeshMessage = require('./MeshMessage');
 var clients = [];
 var servers = {};
 
 function MeshTcp (tcpPort) {
     var self = this;
+    EventEmitter.call(this);
 
     this.tcpPort = tcpPort;
 
@@ -23,7 +24,8 @@ function MeshTcp (tcpPort) {
 
         // Handle incoming messages from clients.
         socket.on('message', function (message) {
-            console.log(message);
+            var msgObj = new MeshMessage(message, socket);
+            self.emit('message', msgObj);
         });
 
         // Remove the client from the list when it leaves
@@ -54,9 +56,25 @@ MeshTcp.prototype.publish = function (target, message) {
     for (var key in servers) {
         var server = servers[key];
         if (_.contains(server.info.listensTo, target)) {
-            server.sendMessage(JSON.parse(message));
+            var msgObj = {};
+            msgObj["type"] = "pub";
+            msgObj["target"] = target;
+            msgObj["data"] = message;
+            server.sendMessage(msgObj);
         }
     }
 };
+
+MeshTcp.prototype.request = function (target, message) {
+    var targetSocket = _.find(servers, function(socket){return socket.info.name == target});
+    if (targetSocket != undefined) {
+        var msgObj = {};
+        msgObj["type"] = "req";
+        msgObj["target"] = target;
+        msgObj["data"] = message;
+        targetSocket.sendMessage(msgObj);
+    }
+}
+
 
 module.exports = MeshTcp;

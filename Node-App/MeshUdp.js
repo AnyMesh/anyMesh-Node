@@ -18,7 +18,7 @@ function MeshUdp (message, udpPort) {
            var info = JSON.parse(msg);
            info.address = rinfo.address;
             self.emit('received', info);
-        };
+        }
     });
 
     this.udp_server.bind(udpPort);
