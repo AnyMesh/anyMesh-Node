@@ -12,12 +12,13 @@ function MeshTcp (tcpPort) {
     EventEmitter.call(this);
 
     this.tcpPort = tcpPort;
+    this.name = "";
 
     this.tcp_server = net.createServer(function (socket) {
 
         // Identify this client
         socket = new JsonSocket(socket);
-        socket.name = socket.remoteAddress + ":" + socket.remotePort
+        socket.name = socket.remoteAddress + ":" + socket.remotePort;
 
         // Put this new client in the list
         clients.push(socket);
@@ -30,6 +31,7 @@ function MeshTcp (tcpPort) {
 
         // Remove the client from the list when it leaves
         socket.on('end', function () {
+            console.log('lost connection to client');
             clients.splice(clients.indexOf(socket), 1);
         });
     });
@@ -50,6 +52,11 @@ MeshTcp.prototype.addConnection = function (info) {
 
             console.log("added new server connection");
             console.log(info.name);
+
+            newServer.on('end', function (){
+                console.log('lost connection to server');
+                delete servers[info.name];
+            });
         });
     }
 };
@@ -62,6 +69,7 @@ MeshTcp.prototype.publish = function (target, message) {
             msgObj["type"] = "pub";
             msgObj["target"] = target;
             msgObj["data"] = message;
+            msgObj["sender"] = this.name;
             server.sendMessage(msgObj);
         }
     }
@@ -76,7 +84,6 @@ MeshTcp.prototype.request = function (target, message) {
         msgObj["data"] = message;
         targetSocket.sendMessage(msgObj);
     }
-}
-
+};
 
 module.exports = MeshTcp;

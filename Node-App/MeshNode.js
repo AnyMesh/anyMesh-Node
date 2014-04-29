@@ -21,9 +21,7 @@ MeshNode.prototype.connect = function (name, listensTo) {
     var self = this;
     var msgObj = { "name" : name, "listensTo" : listensTo };
     this.msg = JSON.stringify(msgObj);
-
-
-
+    this.tcp.name = name;
 
     this.udp = new MeshUdp(this.msg, 12345);
     this.udp.on('received', function(msg) {

@@ -3,7 +3,7 @@ var prompt = require("prompt");
 
 var meshNode = new MeshNode();
 meshNode.received = function(message) {
-    console.log("RECEIVED from " + message.info.name);
+    console.log("RECEIVED from " + message.sender);
     console.log(message);
 };
 
@@ -39,6 +39,7 @@ var promptForMessage = function() {
 
         if (result.type == "pub") meshNode.publish(result.target, msgObj);
         else if(result.type == "req") meshNode.request(result.target, msgObj);
+        
 
         promptForMessage();
     });
