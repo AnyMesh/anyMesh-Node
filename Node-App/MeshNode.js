@@ -5,13 +5,12 @@ var MeshTcp = require("./MeshTcp");
 function MeshNode() {
     this.msg = "";
     this.tcp = new MeshTcp(12346);
-    this.published = function(message) {};
+    this.received = function(message) {};
 
     var self = this;
 
     this.tcp.on('message', function(message){
-        console.log("msg received:");
-        console.log(message);
+        self.received(message);
     });
 
     return this;

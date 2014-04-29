@@ -5,6 +5,10 @@ var meshNode = new MeshNode();
 meshNode.received = function(message) {
     console.log("RECEIVED from " + message.sender);
     console.log(message);
+
+    if(message.type == "req") {
+        message.respondWith({"msg":"right back at ya!"});
+    }
 };
 
 
@@ -39,7 +43,6 @@ var promptForMessage = function() {
 
         if (result.type == "pub") meshNode.publish(result.target, msgObj);
         else if(result.type == "req") meshNode.request(result.target, msgObj);
-        
 
         promptForMessage();
     });

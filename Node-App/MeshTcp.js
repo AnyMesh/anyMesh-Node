@@ -7,7 +7,7 @@ var MeshMessage = require('./MeshMessage');
 var clients = [];
 var servers = {};
 
-function MeshTcp (tcpPort) {
+function MeshTcpHandler (tcpPort) {
     var self = this;
     EventEmitter.call(this);
 
@@ -25,7 +25,7 @@ function MeshTcp (tcpPort) {
 
         // Handle incoming messages from clients.
         socket.on('message', function (message) {
-            var msgObj = new MeshMessage(message, socket);
+            var msgObj = new MeshMessage(message, socket, self);
             self.emit('message', msgObj);
         });
 
@@ -39,9 +39,9 @@ function MeshTcp (tcpPort) {
 
     return this;
 }
-util.inherits(MeshTcp, EventEmitter);
+util.inherits(MeshTcpHandler, EventEmitter);
 
-MeshTcp.prototype.addConnection = function (info) {
+MeshTcpHandler.prototype.addConnection = function (info) {
     //connect to remote tcp server
     if(servers[info.name] == undefined) {
         console.log("trying to connect to " + info.address);
@@ -61,7 +61,7 @@ MeshTcp.prototype.addConnection = function (info) {
     }
 };
 
-MeshTcp.prototype.publish = function (target, message) {
+MeshTcpHandler.prototype.publish = function (target, message) {
     for (var key in servers) {
         var server = servers[key];
         if (_.contains(server.info.listensTo, target)) {
@@ -75,15 +75,22 @@ MeshTcp.prototype.publish = function (target, message) {
     }
 };
 
-MeshTcp.prototype.request = function (target, message) {
-    var targetSocket = _.find(servers, function(socket){return socket.info.name == target});
-    if (targetSocket != undefined) {
-        var msgObj = {};
-        msgObj["type"] = "req";
-        msgObj["target"] = target;
-        msgObj["data"] = message;
-        targetSocket.sendMessage(msgObj);
-    }
+MeshTcpHandler.prototype.request = function (target, message) {
+    var msgObj = {};
+    msgObj["type"] = "req";
+    msgObj["target"] = target;
+    msgObj["data"] = message;
+    msgObj["sender"] = this.name;
+    this.sendThis(msgObj);
 };
 
-module.exports = MeshTcp;
+MeshTcpHandler.prototype.sendThis = function (msgObj) {
+    var targetSocket = this.socketForName(msgObj.target);
+    if (targetSocket != undefined) targetSocket.sendMessage(msgObj);
+}
+
+MeshTcpHandler.prototype.socketForName  = function(targetName) {
+    return _.find(servers, function(socket){return socket.info.name == targetName});
+};
+
+module.exports = MeshTcpHandler;
