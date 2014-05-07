@@ -1,4 +1,5 @@
 var net = require('net');
+var carrier = require('carrier');
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var _ = require("underscore");
@@ -22,7 +23,8 @@ function MeshTcpHandler (tcpPort) {
         clients.push(socket);
 
         // Handle incoming messages from clients.
-        socket.on('data', function (package) {
+        var my_carrier = carrier.carry(socket);
+        my_carrier.on('line', function (package) {
             
             var msgObj = new MeshMessage(JSON.parse(package), socket, self);
             self.emit('message', msgObj);

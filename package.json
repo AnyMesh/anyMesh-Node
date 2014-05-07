@@ -5,6 +5,7 @@
     "dependencies" : {
         "ip": "*",
         "prompt": "*",
-        "underscore": "*"
+        "underscore": "*",
+        "carrier": "*"
     }
 }
