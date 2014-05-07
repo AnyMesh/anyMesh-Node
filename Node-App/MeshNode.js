@@ -3,9 +3,9 @@ var MeshTcp = require("./MeshTcp");
 
 
 function MeshNode() {
-    this.msg = "";
+    this.deviceInfoString = "";
     this.tcp = new MeshTcp(12346);
-    this.received = function(message) {};
+    this.received = function(package) {};
 
     var self = this;
 
@@ -18,24 +18,24 @@ function MeshNode() {
 
 MeshNode.prototype.connect = function (name, listensTo) {
     var self = this;
-    var msgObj = { "name" : name, "listensTo" : listensTo };
-    this.msg = JSON.stringify(msgObj);
+    var deviceInfo = { "name" : name, "listensTo" : listensTo };
+    this.deviceInfoString = JSON.stringify(deviceInfo);
     this.tcp.name = name;
 
     this.udp = new MeshUdp(this.msg, 12345);
-    this.udp.on('received', function(msg) {
-        self.tcp.addConnection(msg);
+    this.udp.on('received', function(deviceInfoString) {
+        self.tcp.addConnection(deviceInfoString);
     });
 
     this.udp.startBroadcasting();
 };
 
-MeshNode.prototype.publish = function(target, message) {
-    this.tcp.publish(target, message);
+MeshNode.prototype.publish = function(target, payload) {
+    this.tcp.publish(target, payload);
 };
 
-MeshNode.prototype.request = function(target, message) {
-    this.tcp.request(target, message);
+MeshNode.prototype.request = function(target, payload) {
+    this.tcp.request(target, payload);
 };
 
 module.exports = MeshNode;

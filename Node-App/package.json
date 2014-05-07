@@ -5,7 +5,6 @@
     "dependencies" : {
         "ip": "*",
         "prompt": "*",
-        "underscore": "*",
-        "json-socket": "*"
+        "underscore": "*"
     }
 }
