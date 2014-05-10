@@ -1,10 +1,10 @@
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
-function MeshUdp (message, udpPort) {
+function MeshUdp (networkID, udpPort) {
     var self = this;
 
-    this.message = message;
+    this.networkID = networkID;
     this.udpPort = udpPort;
 
     var ip = require("ip");
@@ -14,10 +14,8 @@ function MeshUdp (message, udpPort) {
     this.udp_client = dgram.createSocket("udp4");
 
     this.udp_server.on("message", function (msg, rinfo) {
-       if (rinfo.address != ip.address()){
-           var info = JSON.parse(msg);
-           info.address = rinfo.address;
-            self.emit('received', info);
+       if (rinfo.address != ip.address() && msg == networkID){
+            self.emit('received', rinfo.address);
         }
     });
 
@@ -32,7 +30,7 @@ util.inherits(MeshUdp, EventEmitter);
 MeshUdp.prototype.startBroadcasting = function () {
     var self = this;
     setInterval(function () {
-        var buffer = new Buffer(self.message);
+        var buffer = new Buffer(self.networkID);
         self.udp_client.setBroadcast(true);
         self.udp_client.send(buffer, 0, buffer.length, self.udpPort, "255.255.255.255");
     }, 3000);

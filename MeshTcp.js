@@ -4,8 +4,8 @@ var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var _ = require("underscore");
 var MeshMessage = require('./MeshMessage');
-var clients = [];
-var servers = {};
+var connections = [];
+
 
 function MeshTcpHandler (tcpPort) {
     var self = this;
@@ -16,11 +16,18 @@ function MeshTcpHandler (tcpPort) {
 
     this.tcp_server = net.createServer(function (socket) {
         // Identify this client
-        socket.name = socket.remoteAddress + ":" + socket.remotePort;
+        socket.ipAddress = socket.remoteAddress;
+
+
+        if(self.connectionExists(socket.ipAddress)) {
+            socket.close();
+            console.log('already exists');
+            return;
+        }
 
         // Put this new client in the list
-        clients.push(socket);
-
+        connections.push(socket);
+        console.log('server adding client');
         // Handle incoming messages from clients.
         var my_carrier = carrier.carry(socket);
         my_carrier.on('line', function (package) {
@@ -32,7 +39,7 @@ function MeshTcpHandler (tcpPort) {
         // Remove the client from the list when it leaves
         socket.on('end', function () {
             console.log('lost connection to client');
-            clients.splice(clients.indexOf(socket), 1);
+            connections.splice(connections.indexOf(socket), 1);
         });
 
         socket.on('error', function () {
@@ -45,36 +52,33 @@ function MeshTcpHandler (tcpPort) {
 }
 util.inherits(MeshTcpHandler, EventEmitter);
 
-MeshTcpHandler.prototype.addConnection = function (info) {
+MeshTcpHandler.prototype.addConnection = function (ipToConnect) {
     //connect to remote tcp server
-    if(servers[info.name] == undefined) {
-        console.log("trying to connect to " + info.address);
+    if(!this.connectionExists(ipToConnect)) {
+        console.log("trying to connect to " + ipToConnect);
         var newServer = new net.Socket();
-        newServer.connect(this.tcpPort, info.address, function() {
-            newServer.info = info;
-            servers[info.name] = newServer;
-
-            console.log("added new server connection");
-            console.log(info.name);
-
+        newServer.connect(this.tcpPort, ipToConnect, function() {
+            newServer.ipAddress = ipToConnect;
+            connections.push(newServer);
+            console.log('client adding server');
             newServer.on('end', function (){
                 console.log('lost connection to server');
-                delete servers[info.name];
+                connections.splice(connections.indexOf(newServer), 1);
             });
         });
     }
 };
 
 MeshTcpHandler.prototype.publish = function (target, payload) {
-    for (var key in servers) {
-        var server = servers[key];
-        if (_.contains(server.info.listensTo, target)) {
+    for (var index in connections) {
+        var connection = connections[index];
+        if (_.contains(connection.info.listensTo, target)) {
             var msgObj = {};
             msgObj["type"] = "pub";
             msgObj["target"] = target;
             msgObj["data"] = payload;
             msgObj["sender"] = this.name;
-            server.write(JSON.stringify(msgObj) + '\r\n');
+            connection.write(JSON.stringify(msgObj) + '\r\n');
         }
     }
 };
@@ -94,7 +98,15 @@ MeshTcpHandler.prototype.sendThis = function (msgObj) {
 }
 
 MeshTcpHandler.prototype.socketForName  = function(targetName) {
-    return _.find(servers, function(socket){return socket.info.name == targetName});
+    return _.find(connections, function(socket){return socket.info.name == targetName});
 };
+
+MeshTcpHandler.prototype.connectionExists = function(ipAddress) {
+    for(var index in connections) {
+        var connection = connections[index];
+        if (connection.ipAddress == ipAddress) return true;
+    }
+    return false;
+}
 
 module.exports = MeshTcpHandler;
