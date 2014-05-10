@@ -15,7 +15,6 @@ function MeshTcpHandler (tcpPort) {
     this.name = "";
 
     this.tcp_server = net.createServer(function (socket) {
-
         // Identify this client
         socket.name = socket.remoteAddress + ":" + socket.remotePort;
 
@@ -35,6 +34,10 @@ function MeshTcpHandler (tcpPort) {
             console.log('lost connection to client');
             clients.splice(clients.indexOf(socket), 1);
         });
+
+        socket.on('error', function () {
+            //TODO: error handling?
+        })
     });
     this.tcp_server.listen(tcpPort, '0.0.0.0');
 
