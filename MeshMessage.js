@@ -5,6 +5,7 @@ function MeshMessage (msgObj, socket, tcpHandler) {
     this.data = msgObj.data;
     this.sender = msgObj.sender;
     this.target = msgObj.target;
+    this.listensTo = msgObj.listensTo;
     this.socket = socket;
     this.tcpHandler = tcpHandler;
 

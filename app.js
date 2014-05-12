@@ -3,9 +3,13 @@ var prompt = require("prompt");
 
 var meshNode = new MeshNode();
 meshNode.received = function(message) {
+    console.log('**********************************');
     console.log("RECEIVED from " + message.sender);
-    console.log(message);
-
+    console.log("MSG TYPE:" + message.type);
+    console.log("MSG TARGET:" + message.target);
+    console.log("   ");
+    console.log(message.data);
+    console.log('**********************************');
     if(message.type == "req") {
         message.respondWith({"msg":"right back at ya!"});
     }
