@@ -20,7 +20,7 @@ function MeshTcpHandler (tcpPort) {
         socket.info = {};
 
         if(self.connectionExists(socket.ipAddress)) {
-            socket.close();
+            socket.destroy();
             console.log('already exists');
             return;
         }
