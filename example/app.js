@@ -1,4 +1,4 @@
-var MeshNode = require("./MeshNode");
+var MeshNode = require("../lib/MeshNode");
 var prompt = require("prompt");
 
 var meshNode = new MeshNode();
@@ -15,7 +15,12 @@ meshNode.received = function(message) {
     }
 };
 
-
+meshNode.connectedTo = function(info) {
+    console.log('Connected to ' + info.name);
+}
+meshNode.disconnectedFrom = function(name) {
+    console.log('Disconnected from ' + name);
+}
 
 var promptInfo = {
     properties: {
