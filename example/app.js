@@ -15,7 +15,12 @@ meshNode.received = function(message) {
     }
 };
 
-
+meshNode.connectedTo = function(info) {
+    console.log('Connected to ' + info.name);
+}
+meshNode.disconnectedFrom = function(name) {
+    console.log('Disconnected from ' + name);
+}
 
 var promptInfo = {
     properties: {
