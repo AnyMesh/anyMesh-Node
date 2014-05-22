@@ -1,10 +1,26 @@
 {
-    "name" : "anyshow",
-    "version" : "0.0.1",
-    "description" : "node component for anyShow, a scalable, decentralized embedded show controller for Raspberry Pi",
+    "name" : "anyMesh",
+    "version" : "0.1.0",
+    "author" : { "name": "Dave Paul", "email": "davepaul0@gmail.com"},
+    "repository": {
+    "type": "git",
+    "url": "git://github.com/AnyMesh/anyMesh-Node.git"
+  },
+    "licenses": [
+    {
+      "type": "MIT"
+    }
+    ],
+
+    "description" : "A multi-platform, decentralized, auto-discover and auto-connect mesh networking and messaging API",
+    "keywords" : [
+      "mesh",
+      "network",
+      "decentralized",
+      "messaging"
+    ],
     "dependencies" : {
         "ip": "*",
-        "prompt": "*",
         "underscore": "*",
         "carrier": "*"
     }
