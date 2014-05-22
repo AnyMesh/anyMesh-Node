@@ -1,4 +1,4 @@
-var MeshNode = require("./MeshNode");
+var MeshNode = require("../lib/MeshNode");
 var prompt = require("prompt");
 
 var meshNode = new MeshNode();
