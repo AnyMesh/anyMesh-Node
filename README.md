@@ -28,8 +28,45 @@ That's all there is to it!
 
 
 
-Quickstart:
-In progress...
+##Quickstart:
+Create AnyMesh singleton:
+
+    var AnyMesh = require("AnyMesh");
+    var anyMesh = new AnyMesh();
+
+Handle messages received by defining callback function:
+
+    anyMesh.received = function(message) {
+      //message is object containing message info
+      //including type, sender, target, and data
+      console.log("message sent by " + message.sender);
+      console.log(message.data);
+    }
+
+Define callbacks for node connects and disconnects if desired:
+
+    anyMesh.connectedTo = function(info) {
+        console.log('Connected to ' + info.name);
+    }
+    anyMesh.disconnectedFrom = function(name) {
+        console.log('Disconnected from ' + name);
+    }
+
+
+Enable connectivity:
+
+    anyMesh.connect("Dave", ["events", "updates"]);
+
+Send a request:
+
+    anyMesh.request("Bob", {"msg":"Hello Bob", "priority":1});
+
+Publish to subscribers:
+
+    anyMesh.publish("updates", {"update":"new headlines!", "content":[1, 5, 8]});
+
+
+
 
 
 
