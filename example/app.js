@@ -1,8 +1,8 @@
-var MeshNode = require("../lib/MeshNode");
+var AnyMesh = require("../lib/AnyMesh");
 var prompt = require("prompt");
 
-var meshNode = new MeshNode();
-meshNode.received = function(message) {
+var anyMesh = new AnyMesh();
+anyMesh.received = function(message) {
     console.log('**********************************');
     console.log("RECEIVED from " + message.sender);
     console.log("MSG TYPE:" + message.type);
@@ -15,17 +15,17 @@ meshNode.received = function(message) {
     }
 };
 
-meshNode.connectedTo = function(info) {
+anyMesh.connectedTo = function(info) {
     console.log('Connected to ' + info.name);
 }
-meshNode.disconnectedFrom = function(name) {
+anyMesh.disconnectedFrom = function(name) {
     console.log('Disconnected from ' + name);
 }
 
 var promptInfo = {
     properties: {
         name : {
-            description: 'enter the name of this meshNode',
+            description: 'enter the name of this anyMesh',
             required: true
         },
         listensTo : {
@@ -40,7 +40,7 @@ prompt.get(promptInfo, function (err, result) {
     console.log(result.name);
     console.log(result.listensTo);
 
-    meshNode.connect(result.name, result.listensTo);
+    anyMesh.connect(result.name, result.listensTo);
     promptForMessage();
 });
 
@@ -50,8 +50,8 @@ var promptForMessage = function() {
         var msgObj = {};
         msgObj["msg"] = result.message;
 
-        if (result.type == "pub") meshNode.publish(result.target, msgObj);
-        else if(result.type == "req") meshNode.request(result.target, msgObj);
+        if (result.type == "pub") anyMesh.publish(result.target, msgObj);
+        else if(result.type == "req") anyMesh.request(result.target, msgObj);
 
         promptForMessage();
     });
