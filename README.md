@@ -26,6 +26,9 @@ That's all there is to it!
 
 #AnyMesh Node
 
+Install:
+
+    npm install anymesh
 
 
 ##Quickstart:
