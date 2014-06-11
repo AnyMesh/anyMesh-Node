@@ -1,6 +1,6 @@
 {
     "name" : "anymesh",
-    "version" : "0.1.0",
+    "version" : "0.1.1",
     "author" : { "name": "Dave Paul", "email": "davepaul0@gmail.com"},
     "repository": {
     "type": "git",
