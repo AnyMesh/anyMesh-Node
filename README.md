@@ -1,4 +1,5 @@
 #AnyMesh
+https://github.com/AnyMesh
 
 AnyMesh is a multi-platform, decentralized, auto-discovery, auto-connect mesh networking API.  
 
@@ -6,6 +7,7 @@ Current supported platforms:
 
 * Node.js
 * iOS
+* Python
 
 AnyMesh makes it easy to build a decentralized, multi-platform mesh network on any LAN, without having to manually implement TCP / UDP processes.
 
@@ -71,10 +73,7 @@ Publish to subscribers:
 
 
 
-
-
-
-
+###Any questions, comments, or suggestions, e-mail me (Dave) at davepaul0@gmail.com!
 
 
 
