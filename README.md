@@ -71,6 +71,19 @@ Publish to subscribers:
     anyMesh.publish("updates", {"update":"new headlines!", "content":[1, 5, 8]});
 
 
+## About the Example App
+The included demo app uses the 3rd party library Prompt
+https://github.com/flatiron/prompt
+
+run "npm install" in the example folder to install.
+
+The current example app is a little crude, I hope to replace it with something similiar
+to the current Python and iOS demo apps soon.  For now:
+* when you launch the demo, the first thing to do is enter the name you want to use for your anyMesh instance.
+* next you can enter the keywords you wish to "subscribe" to.  Press Ctrl-C on an empty line to indicate you're done
+inputting subcriptions.  DO NOT PRESS ENTER TWICE!
+* if anyMesh connects you to another device, you can send a message.  For "type", enter either "req" for a request,
+or "pub" for a publish.
 
 
 ###Any questions, comments, or suggestions, e-mail me (Dave) at davepaul0@gmail.com!
