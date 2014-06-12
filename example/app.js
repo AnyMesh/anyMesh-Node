@@ -1,58 +1,74 @@
 var AnyMesh = require("../lib/AnyMesh");
-var prompt = require("prompt");
+var blessed = require("blessed");
 
-var anyMesh = new AnyMesh();
-anyMesh.received = function(message) {
-    console.log('**********************************');
-    console.log("RECEIVED from " + message.sender);
-    console.log("MSG TYPE:" + message.type);
-    console.log("MSG TARGET:" + message.target);
-    console.log("   ");
-    console.log(message.data);
-    console.log('**********************************');
-    if(message.type == "req") {
-        message.respondWith({"msg":"right back at ya!"});
-    }
-};
+var name;
+var listensTo = [];
 
-anyMesh.connectedTo = function(info) {
-    console.log('Connected to ' + info.name);
+var setupBoxOffset;
+
+
+function addNameInput() {
+    var nameInput = blessed.textbox({
+        top: 3,
+        left: 'center',
+        width: '90%',
+        height: 3,
+        content: 'Enter name:'
+    });
+    nameInput.on('focus', function(){
+        nameInput.readInput(function(){
+            name = nameInput.value;
+            addListensInput();
+            screen.render();
+        })
+    });
+    setupBox.append(nameInput);
+    nameInput.focus();
 }
-anyMesh.disconnectedFrom = function(name) {
-    console.log('Disconnected from ' + name);
-}
 
-var promptInfo = {
-    properties: {
-        name : {
-            description: 'enter the name of this anyMesh',
-            required: true
-        },
-        listensTo : {
-            type: 'array'
+function addListensInput() {
+    var listensInput = blessed.textbox({
+        top: 7,
+        left: 'center',
+        width: '90%',
+        height: 3,
+        content: 'Enter a subscription keyword:'
+    });
+    listensInput.on('focus', function(){
+        listensInput.readInput(function(){
+            listensTo.push(listensInput.value);
+            addListensInput();
+            screen.render();
+        })
+    });
+    listensInput.key('enter', function(ch, key) {
+        if (listensInput.value.length <= 0) {
+            setupAnyMesh();
         }
+    })
+    setupBox.append(listensInput);
+    listensInput.focus();
+}
+
+
+var screen = blessed.screen();
+
+var setupBox = blessed.form({
+    top: 'center',
+    left: 'center',
+    width: '50%',
+    height: '50%',
+    content: 'Enter your device info!',
+    tags: true,
+    border: {
+        type: 'line'
     }
+});
+screen.append(setupBox);
 
-};
-
-prompt.start();
-prompt.get(promptInfo, function (err, result) {
-    console.log(result.name);
-    console.log(result.listensTo);
-
-    anyMesh.connect(result.name, result.listensTo);
-    promptForMessage();
+screen.key('escape', function(ch, key) {
+    return process.exit(0);
 });
 
-
-var promptForMessage = function() {
-    prompt.get(["type", "target", "message"], function (err, result) {
-        var msgObj = {};
-        msgObj["msg"] = result.message;
-
-        if (result.type == "pub") anyMesh.publish(result.target, msgObj);
-        else if(result.type == "req") anyMesh.request(result.target, msgObj);
-
-        promptForMessage();
-    });
-};
+addNameInput();
+screen.render();
