@@ -1,5 +1,6 @@
 var AnyMesh = require("../lib/AnyMesh");
 var blessed = require("blessed");
+var setup = require("./setupFunctions");
 
 var name;
 var listensTo = [];
@@ -52,12 +53,13 @@ function addListensInput() {
         if (listensInput.value.length <= 0) {
             setupAnyMesh();
             screen.remove(setupBox);
+            inputBox.msgField.focus();
             screen.render();
         }
-    })
+    });
 
-    var labelText = 'Enter a subscription keyword:'
-    if(listensTo.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!'
+    var labelText = 'Enter a subscription keyword:';
+    if(listensTo.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!';
 
     var listensLabel = blessed.text({
         top: setupBoxOffset,
@@ -65,7 +67,7 @@ function addListensInput() {
         width: '90%',
         height: 1,
         content: labelText
-    })
+    });
     setupBox.append(listensInput);
     setupBox.append(listensLabel);
     setupBoxOffset = setupBoxOffset + 3;
@@ -74,45 +76,21 @@ function addListensInput() {
 
 var screen = blessed.screen();
 
-var msgBox = blessed.box({
-    top: 'top',
-    left: 'left',
-    width: '80%',
-    height: '85%',
-    scrollable: true,
-    border: {type: 'line'}
-});
+var msgBox = setup.getMessageBox();
 screen.append(msgBox);
 
-var inputBox = blessed.form({
-    top: '85%',
-    left: 'left',
-    width: '80%',
-    height: '15%',
-    border: {type: 'line'}
+var inputBox = setup.getInputBox();
+inputBox.msgField.on('focus', function(){
+    inputBox.msgField.readInput(function(){
+
+    });
 });
 screen.append(inputBox);
 
-var deviceBox = blessed.box({
-    top: 'top',
-    left: '80%',
-    width: '20%',
-    height: '100%',
-    content: 'Connected Devices',
-    border: {type: 'line'}
-});
+var deviceBox = setup.getDeviceBox();
 screen.append(deviceBox);
 
-var setupBox = blessed.form({
-    top: 'center',
-    left: 'center',
-    width: '50%',
-    height: '50%',
-    content: 'Enter your device name!',
-    tags: true,
-    scrollable: true,
-    border: {type: 'line'}
-});
+var setupBox = setup.getSetupBox();
 screen.append(setupBox);
 
 screen.key('escape', function(ch, key) {
