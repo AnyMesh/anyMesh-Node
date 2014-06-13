@@ -4,22 +4,30 @@ var setup = require("./setupFunctions");
 
 var name;
 var listensTo = [];
-var anyMesh;
 
 var setupBoxOffset = 3;
+var msgBoxOffset = 1;
+
+
+var anyMesh = new AnyMesh();
+anyMesh.connectedTo = function(info) {
+    msgBox.append(blessed.text({
+    top: msgBoxOffset, left: '5%', width: '90%', height: 1, content: 'Connected to ' + info.name
+    }));
+    screen.render();
+};
+
+
 
 function setupAnyMesh() {
-    if(anyMesh)return;
-    anyMesh = new AnyMesh();
     anyMesh.connect(name, listensTo);
+
+
 }
 
 function addNameInput() {
     var nameInput = blessed.textbox({
-        top: setupBoxOffset,
-        left: 'center',
-        width: '90%',
-        height: 3
+        top: setupBoxOffset, left: 'center', width: '90%', height: 3
     });
     nameInput.on('focus', function(){
         nameInput.readInput(function(){
@@ -35,14 +43,11 @@ function addNameInput() {
 
 function addListensInput() {
     var listensInput = blessed.textbox({
-        top: setupBoxOffset + 1,
-        left: 'center',
-        width: '90%',
-        height: 3
+        top: setupBoxOffset + 1, left: 'center', width: '90%', height: 3
     });
     listensInput.on('focus', function(){
         listensInput.readInput(function(){
-            if (listensInput.value.length > 0) {
+            if (listensInput.value.length > 1) {
                 listensTo.push(listensInput.value);
                 addListensInput();
                 screen.render();
@@ -62,11 +67,7 @@ function addListensInput() {
     if(listensTo.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!';
 
     var listensLabel = blessed.text({
-        top: setupBoxOffset,
-        left: 'center',
-        width: '90%',
-        height: 1,
-        content: labelText
+        top: setupBoxOffset, left: 'center', width: '90%', height: 1, content: labelText
     });
     setupBox.append(listensInput);
     setupBox.append(listensLabel);
