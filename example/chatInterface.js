@@ -1,29 +1,33 @@
 var blessed = require("blessed");
 
-var setup =  {
-    getDeviceBox : function() {
+var chatInterface =  {};
+chatInterface.setupBoxOffset = 3;
+chatInterface.msgBoxOffset = 1;
+
+    chatInterface.getDeviceBox = function() {
         return blessed.box({
             top: 'top', left: '80%', width: '20%', height: '100%', content: 'Connected Devices',
             border: {type: 'line'}
         });
-    },
+    };
 
-    getMessageBox : function() {
+    chatInterface.getMessageBox = function() {
         var msgBox = blessed.box({
             top: 'top', left: 'left', width: '80%', height: '85%',
             scrollable: true,
             border: {type: 'line'}
         });
-        msgBox.addLine = function(content, offset) {
+        msgBox.addLine = function(content) {
             msgBox.append(blessed.text({
-                top: offset, left: '5%', width: '90%', height: 1, content: content
+                top: chatInterface.msgBoxOffset, left: '5%', width: '90%', height: 1, content: content
             }));
+            chatInterface.msgBoxOffset++;
             msgBox.screen.render();
         };
         return msgBox;
-    },
+    };
 
-    getInputBox : function() {
+    chatInterface.getInputBox = function() {
         var inputBox =  blessed.form({
             keys: true,
             top: '85%', left: 'left', width: '80%', height: '15%',
@@ -61,27 +65,46 @@ var setup =  {
 
         inputBox.msgField = blessed.textbox({
             keys: true,
-            top: 1, left: '20%', width: '70%', height: 1
+            top: 1, left: '20%', width: '70%', height: 1,
+            style: {
+                bg: 'blue',
+                focus: {
+                    bg: 'red'
+                }
+            }
+        });
+        inputBox.msgField.on('focus', function(){
+            inputBox.msgField.readInput();
         });
         inputBox.targetField = blessed.textbox({
             keys: true,
-            top: 2, left: '20%', width: '70%', height: 1
+            top: 2, left: '20%', width: '70%', height: 1,
+            style: {
+                bg: 'blue',
+                focus: {
+                    bg: 'red'
+                }
+            }
         });
-        inputBox.append(inputBox.targetField);
+        inputBox.targetField.on('focus', function(){
+            inputBox.targetField.readInput();
+        });
         inputBox.append(inputBox.msgField);
+        inputBox.append(inputBox.targetField);
         inputBox.append(inputBox.reqButton);
         inputBox.append(inputBox.pubButton);
         return inputBox;
-    },
+    };
 
-    getSetupBox : function() {
+    chatInterface.getSetupBox = function() {
         return blessed.form({
             top: 'center', left: 'center', width: '50%', height: '50%', content: 'Enter your device name!',
             tags: true,
             scrollable: true,
             border: {type: 'line'}
         });
-    }
-};
+    };
 
-module.exports = setup;
+
+
+module.exports = chatInterface;
