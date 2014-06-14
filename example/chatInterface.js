@@ -9,11 +9,18 @@ var setup =  {
     },
 
     getMessageBox : function() {
-        return blessed.box({
+        var msgBox = blessed.box({
             top: 'top', left: 'left', width: '80%', height: '85%',
             scrollable: true,
             border: {type: 'line'}
         });
+        msgBox.addLine = function(content, offset) {
+            msgBox.append(blessed.text({
+                top: offset, left: '5%', width: '90%', height: 1, content: content
+            }));
+            msgBox.screen.render();
+        };
+        return msgBox;
     },
 
     getInputBox : function() {

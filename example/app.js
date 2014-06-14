@@ -1,33 +1,45 @@
 var AnyMesh = require("../lib/AnyMesh");
 var blessed = require("blessed");
-var setup = require("./setupFunctions");
+var chatInterface = require("./chatInterface");
 
 var name;
 var listensTo = [];
 
-var setupBoxOffset = 3;
-var msgBoxOffset = 1;
 
-
+//Initialize AnyMesh and define CallBacks:
 var anyMesh = new AnyMesh();
 anyMesh.connectedTo = function(info) {
-    msgBox.append(blessed.text({
-    top: msgBoxOffset, left: '5%', width: '90%', height: 1, content: 'Connected to ' + info.name
-    }));
-    screen.render();
+    msgBox.addLine('Connected to ' + info.name);
 };
-
-
+anyMesh.disconnectedFrom = function(name) {
+    msgBox.addLine('Disconnected from ' + name);
+};
+anyMesh.received = function(message) {
+    msgBox.addLine('Message from ' + message.sender);
+    msgBox.addLine('Message content: ' + message.data.msg);
+    msgBox.addLine(' ');
+}
 
 function setupAnyMesh() {
     anyMesh.connect(name, listensTo);
-
-
 }
+
+//these are called when a user presses either the publish or request buttons:
+function reqButtonPressed() {
+    anyMesh.request(inputBox.targetField.value, {'msg': inputBox.msgField.value});
+}
+function pubButtonPressed() {
+    anyMesh.publish(inputBox.targetField.value, {'msg': inputBox.msgField.value});
+}
+
+
+
+
+
 
 function addNameInput() {
     var nameInput = blessed.textbox({
-        top: setupBoxOffset, left: 'center', width: '90%', height: 3
+        top: chatInterface.setupBoxOffset, left: 'center', width: '90%', height: 3
     });
     nameInput.on('focus', function(){
         nameInput.readInput(function(){
@@ -37,13 +49,13 @@ function addNameInput() {
         })
     });
     setupBox.append(nameInput);
-    setupBoxOffset = setupBoxOffset + 3;
+    chatInterface.setupBoxOffset = chatInterface.setupBoxOffset + 3;
     nameInput.focus();
 }
 
 function addListensInput() {
     var listensInput = blessed.textbox({
-        top: setupBoxOffset + 1, left: 'center', width: '90%', height: 3
+        top: chatInterface.setupBoxOffset + 1, left: 'center', width: '90%', height: 3
     });
     listensInput.on('focus', function(){
         listensInput.readInput(function(){
@@ -67,31 +79,37 @@ function addListensInput() {
     if(listensTo.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!';
 
     var listensLabel = blessed.text({
-        top: setupBoxOffset, left: 'center', width: '90%', height: 1, content: labelText
+        top: chatInterface.setupBoxOffset, left: 'center', width: '90%', height: 1, content: labelText
     });
     setupBox.append(listensInput);
     setupBox.append(listensLabel);
-    setupBoxOffset = setupBoxOffset + 3;
+    chatInterface.setupBoxOffset = chatInterface.setupBoxOffset + 3;
     listensInput.focus();
 }
 
 var screen = blessed.screen();
 
-var msgBox = setup.getMessageBox();
+var msgBox = chatInterface.getMessageBox();
 screen.append(msgBox);
 
-var inputBox = setup.getInputBox();
-inputBox.msgField.on('focus', function(){
-    inputBox.msgField.readInput(function(){
+var inputBox = chatInterface.getInputBox();
 
-    });
+
+inputBox.pubButton.on('press', function() {
+    pubButtonPressed();
 });
+
+inputBox.reqButton.on('press', function() {
+    reqButtonPressed();
+});
+
+
 screen.append(inputBox);
 
-var deviceBox = setup.getDeviceBox();
+var deviceBox = chatInterface.getDeviceBox();
 screen.append(deviceBox);
 
-var setupBox = setup.getSetupBox();
+var setupBox = chatInterface.getSetupBox();
 screen.append(setupBox);
 
 screen.key('escape', function(ch, key) {
