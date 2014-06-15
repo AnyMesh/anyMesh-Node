@@ -9,16 +9,20 @@ var listensTo = [];
 //Initialize AnyMesh and define CallBacks:
 var anyMesh = new AnyMesh();
 anyMesh.connectedTo = function(info) {
+    chatInterface.updateDeviceList(deviceBox, anyMesh.getConnections());
+    //msgBox.addLine('Device count: ' + anyMesh.getConnections().length)
     msgBox.addLine('Connected to ' + info.name);
 };
 anyMesh.disconnectedFrom = function(name) {
+    chatInterface.updateDeviceList(deviceBox, anyMesh.getConnections());
+    //msgBox.addLine('Device count: ' + anyMesh.getConnections().length)
     msgBox.addLine('Disconnected from ' + name);
 };
 anyMesh.received = function(message) {
     msgBox.addLine('Message from ' + message.sender);
     msgBox.addLine('Message content: ' + message.data.msg);
     msgBox.addLine(' ');
-}
+};
 
 function setupAnyMesh() {
     anyMesh.connect(name, listensTo);
@@ -26,11 +30,26 @@ function setupAnyMesh() {
 
 //these are called when a user presses either the publish or request buttons:
 function reqButtonPressed() {
-    anyMesh.request(inputBox.targetField.value, {'msg': inputBox.msgField.value});
+    var target = inputBox.targetField.value;
+    var msg = inputBox.msgField.value
+    anyMesh.request(target, {'msg': msg});
+    msgBox.addLine('Sent request to ' + target);
+    msgBox.addLine('Message content: ' + msg);
+    msgBox.addLine(' ');
 }
 function pubButtonPressed() {
-    anyMesh.publish(inputBox.targetField.value, {'msg': inputBox.msgField.value});
+    var target = inputBox.targetField.value;
+    var msg = inputBox.msgField.value
+    anyMesh.publish(target, {'msg': msg});
+    msgBox.addLine('Published to keyword: ' + target);
+    msgBox.addLine('Message content: ' + msg);
+    msgBox.addLine(' ');
 }
+
+
+
+
+
 
 
 

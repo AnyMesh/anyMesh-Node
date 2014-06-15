@@ -1,4 +1,5 @@
 var blessed = require("blessed");
+var _ = require("underscore");
 
 var chatInterface =  {};
 chatInterface.setupBoxOffset = 3;
@@ -7,6 +8,7 @@ chatInterface.msgBoxOffset = 1;
     chatInterface.getDeviceBox = function() {
         return blessed.box({
             top: 'top', left: '80%', width: '20%', height: '100%', content: 'Connected Devices',
+            scrollable: true,
             border: {type: 'line'}
         });
     };
@@ -105,6 +107,13 @@ chatInterface.msgBoxOffset = 1;
         });
     };
 
+    chatInterface.updateDeviceList = function(deviceBox, connections) {
+        deviceBox.children = [];
 
+        _.each(connections, function(connection, i, connections){
+            deviceBox.append(blessed.text({top:3+i, left: '10%', width: '80%', height: 1, content: connection.name}));
+        })
+        deviceBox.screen.render();
+    };
 
 module.exports = chatInterface;

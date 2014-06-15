@@ -2,6 +2,7 @@
     "name": "anyMesh-example",
     "version": "0.0.2",
     "dependencies": {
-        "blessed": "*"
+        "blessed": "*",
+        "underscore": "*"
     }
 }
