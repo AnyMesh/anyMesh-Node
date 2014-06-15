@@ -1,58 +1,139 @@
 var AnyMesh = require("../lib/AnyMesh");
-var prompt = require("prompt");
+var blessed = require("blessed");
+var chatInterface = require("./chatInterface");
 
+var name;
+var listensTo = [];
+
+
+//Initialize AnyMesh and define CallBacks:
 var anyMesh = new AnyMesh();
-anyMesh.received = function(message) {
-    console.log('**********************************');
-    console.log("RECEIVED from " + message.sender);
-    console.log("MSG TYPE:" + message.type);
-    console.log("MSG TARGET:" + message.target);
-    console.log("   ");
-    console.log(message.data);
-    console.log('**********************************');
-    if(message.type == "req") {
-        message.respondWith({"msg":"right back at ya!"});
-    }
-};
-
 anyMesh.connectedTo = function(info) {
-    console.log('Connected to ' + info.name);
-}
+    chatInterface.updateDeviceList(deviceBox, anyMesh.getConnections());
+    //msgBox.addLine('Device count: ' + anyMesh.getConnections().length)
+    msgBox.addLine('Connected to ' + info.name);
+};
 anyMesh.disconnectedFrom = function(name) {
-    console.log('Disconnected from ' + name);
-}
-
-var promptInfo = {
-    properties: {
-        name : {
-            description: 'enter the name of this anyMesh',
-            required: true
-        },
-        listensTo : {
-            type: 'array'
-        }
-    }
-
+    chatInterface.updateDeviceList(deviceBox, anyMesh.getConnections());
+    //msgBox.addLine('Device count: ' + anyMesh.getConnections().length)
+    msgBox.addLine('Disconnected from ' + name);
+};
+anyMesh.received = function(message) {
+    msgBox.addLine('Message from ' + message.sender);
+    msgBox.addLine('Message content: ' + message.data.msg);
+    msgBox.addLine(' ');
 };
 
-prompt.start();
-prompt.get(promptInfo, function (err, result) {
-    console.log(result.name);
-    console.log(result.listensTo);
+function setupAnyMesh() {
+    anyMesh.connect(name, listensTo);
+}
 
-    anyMesh.connect(result.name, result.listensTo);
-    promptForMessage();
+//these are called when a user presses either the publish or request buttons:
+function reqButtonPressed() {
+    var target = inputBox.targetField.value;
+    var msg = inputBox.msgField.value
+    anyMesh.request(target, {'msg': msg});
+    msgBox.addLine('Sent request to ' + target);
+    msgBox.addLine('Message content: ' + msg);
+    msgBox.addLine(' ');
+}
+function pubButtonPressed() {
+    var target = inputBox.targetField.value;
+    var msg = inputBox.msgField.value
+    anyMesh.publish(target, {'msg': msg});
+    msgBox.addLine('Published to keyword: ' + target);
+    msgBox.addLine('Message content: ' + msg);
+    msgBox.addLine(' ');
+}
+
+
+
+
+
+
+
+
+
+
+
+function addNameInput() {
+    var nameInput = blessed.textbox({
+        top: chatInterface.setupBoxOffset, left: 'center', width: '90%', height: 3
+    });
+    nameInput.on('focus', function(){
+        nameInput.readInput(function(){
+            name = nameInput.value;
+            addListensInput();
+            screen.render();
+        })
+    });
+    setupBox.append(nameInput);
+    chatInterface.setupBoxOffset = chatInterface.setupBoxOffset + 3;
+    nameInput.focus();
+}
+
+function addListensInput() {
+    var listensInput = blessed.textbox({
+        top: chatInterface.setupBoxOffset + 1, left: 'center', width: '90%', height: 3
+    });
+    listensInput.on('focus', function(){
+        listensInput.readInput(function(){
+            if (listensInput.value.length > 1) {
+                listensTo.push(listensInput.value);
+                addListensInput();
+                screen.render();
+            }
+        })
+    });
+    listensInput.key('enter', function(ch, key) {
+        if (listensInput.value.length <= 0) {
+            setupAnyMesh();
+            screen.remove(setupBox);
+            inputBox.msgField.focus();
+            screen.render();
+        }
+    });
+
+    var labelText = 'Enter a subscription keyword:';
+    if(listensTo.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!';
+
+    var listensLabel = blessed.text({
+        top: chatInterface.setupBoxOffset, left: 'center', width: '90%', height: 1, content: labelText
+    });
+    setupBox.append(listensInput);
+    setupBox.append(listensLabel);
+    chatInterface.setupBoxOffset = chatInterface.setupBoxOffset + 3;
+    listensInput.focus();
+}
+
+var screen = blessed.screen();
+
+var msgBox = chatInterface.getMessageBox();
+screen.append(msgBox);
+
+var inputBox = chatInterface.getInputBox();
+
+
+inputBox.pubButton.on('press', function() {
+    pubButtonPressed();
+});
+
+inputBox.reqButton.on('press', function() {
+    reqButtonPressed();
 });
 
 
-var promptForMessage = function() {
-    prompt.get(["type", "target", "message"], function (err, result) {
-        var msgObj = {};
-        msgObj["msg"] = result.message;
+screen.append(inputBox);
 
-        if (result.type == "pub") anyMesh.publish(result.target, msgObj);
-        else if(result.type == "req") anyMesh.request(result.target, msgObj);
+var deviceBox = chatInterface.getDeviceBox();
+screen.append(deviceBox);
 
-        promptForMessage();
-    });
-};
+var setupBox = chatInterface.getSetupBox();
+screen.append(setupBox);
+
+screen.key('escape', function(ch, key) {
+    return process.exit(0);
+});
+
+addNameInput();
+screen.render();
