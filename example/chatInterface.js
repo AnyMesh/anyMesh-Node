@@ -62,8 +62,8 @@ chatInterface.msgBoxOffset = 1;
             }
         });
 
-        inputBox.append(blessed.text({top: 1, left: '5%', width: '12%', height: 1, content: 'Enter a message:'}));
-        inputBox.append(blessed.text({top: 2, left: '5%', width: '12%', height: 1, content: 'Enter a target:'}));
+        inputBox.append(blessed.text({top: 1, left: '2%', width: '19%', height: 1, content: 'Enter a message:'}));
+        inputBox.append(blessed.text({top: 2, left: '2%', width: '19%', height: 1, content: 'Enter a target:'}));
 
         inputBox.msgField = blessed.textbox({
             keys: true,
