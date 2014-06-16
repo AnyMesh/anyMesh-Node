@@ -1,5 +1,5 @@
 var blessed = require("blessed");
-var _ = require("underscore");
+var _ = require("lodash");
 
 var chatInterface =  {};
 chatInterface.setupBoxOffset = 3;
