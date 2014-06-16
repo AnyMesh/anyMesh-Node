@@ -21,7 +21,7 @@
     ],
     "dependencies" : {
         "ip": "*",
-        "underscore": "*",
+        "lodash": "*",
         "carrier": "*"
     }
 }
