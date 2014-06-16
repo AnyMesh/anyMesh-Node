@@ -72,22 +72,15 @@ Publish to subscribers:
 
 
 ## About the Example App
-The included demo app uses the 3rd party library Prompt
-https://github.com/flatiron/prompt
-
+The included demo app uses the 3rd party libraries Underscore and Blessed
 run "npm install" in the example folder to install.
 
-The current example app is a little crude, I hope to replace it with something similiar
-to the current Python and iOS demo apps soon.  For now:
 * when you launch the demo, the first thing to do is enter the name you want to use for your anyMesh instance.
-* next you can enter the keywords you wish to "subscribe" to.  Press Ctrl-C on an empty line to indicate you're done
-inputting subcriptions.  DO NOT PRESS ENTER TWICE!
-* if anyMesh connects you to another device, you can send a message.  For "type", enter either "req" for a request,
-or "pub" for a publish.
+* next you can enter the keywords you wish to "subscribe" to.  Press "Enter" on a blank line to start up anyMesh.
+* if anyMesh connects you to other devices, you can send and receive messages!
 
 
 ###Any questions, comments, or suggestions, e-mail me (Dave) at davepaul0@gmail.com!
-
 
 
 > Written with [StackEdit](https://stackedit.io/).
