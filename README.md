@@ -70,6 +70,11 @@ Publish to subscribers:
 
     anyMesh.publish("updates", {"update":"new headlines!", "content":[1, 5, 8]});
 
+Get information on current connections:
+
+    connectionArray = anyMesh.getConnections();
+
+
 
 ## About the Example App
 The included demo app uses the 3rd party libraries Underscore and Blessed
