@@ -10,12 +10,10 @@ var listensTo = [];
 var anyMesh = new AnyMesh();
 anyMesh.connectedTo = function(info) {
     chatInterface.updateDeviceList(deviceBox, anyMesh.getConnections());
-    //msgBox.addLine('Device count: ' + anyMesh.getConnections().length)
     msgBox.addLine('Connected to ' + info.name);
 };
 anyMesh.disconnectedFrom = function(name) {
     chatInterface.updateDeviceList(deviceBox, anyMesh.getConnections());
-    //msgBox.addLine('Device count: ' + anyMesh.getConnections().length)
     msgBox.addLine('Disconnected from ' + name);
 };
 anyMesh.received = function(message) {
