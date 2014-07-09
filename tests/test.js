@@ -1,9 +1,18 @@
 var AnyMesh = require("../lib/AnyMesh");
 
+var left;
+var right;
 
-exports.simpleConnectTest = function(test){
+exports.tearDown = function (callback){
+    right.stop();
+    left.stop();
+    console.log("tore it down");
+    callback();
+}
+
+
+exports.testConnect = function(test){
     test.expect(1);
-    //test.ok(true, "this assertion should pass");
     left = new AnyMesh();
     right = new AnyMesh();
 
@@ -14,7 +23,4 @@ exports.simpleConnectTest = function(test){
 
     left.connect('left', ['odd']);
     right.connect('right', ['even']);
-
-
 };
-
