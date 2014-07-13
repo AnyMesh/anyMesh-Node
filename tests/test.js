@@ -17,6 +17,7 @@ exports.testConnect = function(test){
     right = new AnyMesh();
 
     left.connectedTo = function(info) {
+        console.log("test connected to " + info.name);
         test.ok(true, "connection made!");
         test.done();
     };
