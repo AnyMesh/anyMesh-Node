@@ -3,7 +3,7 @@ var blessed = require("blessed");
 var chatInterface = require("./chatInterface");
 
 var name;
-var listensTo = [];
+var subscriptions = [];
 
 
 //Initialize AnyMesh and define CallBacks:
@@ -23,7 +23,7 @@ anyMesh.received = function(message) {
 };
 
 function setupAnyMesh() {
-    anyMesh.connect(name, listensTo);
+    anyMesh.connect(name, subscriptions);
 }
 
 //these are called when a user presses either the publish or request buttons:
@@ -61,7 +61,7 @@ function addNameInput() {
     nameInput.on('focus', function(){
         nameInput.readInput(function(){
             name = nameInput.value;
-            addListensInput();
+            addSubscriptionInput();
             screen.render();
         })
     });
@@ -70,21 +70,21 @@ function addNameInput() {
     nameInput.focus();
 }
 
-function addListensInput() {
-    var listensInput = blessed.textbox({
+function addSubscriptionInput() {
+    var subscriptionInput = blessed.textbox({
         top: chatInterface.setupBoxOffset + 1, left: 'center', width: '90%', height: 3
     });
-    listensInput.on('focus', function(){
-        listensInput.readInput(function(){
-            if (listensInput.value.length > 1) {
-                listensTo.push(listensInput.value);
-                addListensInput();
+    subscriptionInput.on('focus', function(){
+        subscriptionInput.readInput(function(){
+            if (subscriptionInput.value.length > 1) {
+                subscriptions.push(subscriptionInput.value);
+                addSubscriptionInput();
                 screen.render();
             }
         })
     });
-    listensInput.key('enter', function(ch, key) {
-        if (listensInput.value.length <= 0) {
+    subscriptionInput.key('enter', function(ch, key) {
+        if (subscriptionInput.value.length <= 0) {
             setupAnyMesh();
             screen.remove(setupBox);
             inputBox.msgField.focus();
@@ -93,15 +93,15 @@ function addListensInput() {
     });
 
     var labelText = 'Enter a subscription keyword:';
-    if(listensTo.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!';
+    if(subscriptions.length > 0) labelText = 'Enter another.  Press "enter" on a blank line to begin!';
 
-    var listensLabel = blessed.text({
+    var subscriptionLabel = blessed.text({
         top: chatInterface.setupBoxOffset, left: 'center', width: '90%', height: 1, content: labelText
     });
-    setupBox.append(listensInput);
-    setupBox.append(listensLabel);
+    setupBox.append(subscriptionInput);
+    setupBox.append(subscriptionLabel);
     chatInterface.setupBoxOffset = chatInterface.setupBoxOffset + 3;
-    listensInput.focus();
+    subscriptionInput.focus();
 }
 
 var screen = blessed.screen();
