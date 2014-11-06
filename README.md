@@ -15,7 +15,7 @@ AnyMesh makes it easy to build a decentralized, multi-platform mesh network on a
 All supported platforms work roughly the same way.  Configure each AnyMesh instance with 2 properties:
 
 * Name - a name or identifier for the instance
-* ListensTo - an array of keywords for your instance to listen for
+* Subscriptions - an array of keywords for your instance to listen for
 
 > AnyMesh will automatically find and connect to other AnyMesh
 > instances.
@@ -23,7 +23,7 @@ All supported platforms work roughly the same way.  Configure each AnyMesh insta
 Then, to communicate across the network, an instance can send two types of messages:
 
 * Request - send a message to a specific device Name.
-* Publish - send a message to associated with a keyword.  Any other instance that subscribes to the keyword will receive the message.
+* Publish - send a message associated with a keyword.  Any other instance that subscribes to the keyword will receive the message.
 
 That's all there is to it!
 ## FAQ
@@ -138,6 +138,9 @@ run "npm install" in the example folder to install.
 * next you can enter the keywords you wish to "subscribe" to.  Press ENTER on a blank line to start up anyMesh.
 * if anyMesh connects you to other devices, you can send and receive messages!
 * sample apps included in the iOS and Python AnyMesh libraries are compatible with this app.  View the Changelog to check version compatibility across platforms!
+
+## Unit Testing
+AnyMesh uses nodeunit for its unit tests. See their README for instructions on how to install and use nodeunit's testrunner: https://github.com/caolan/nodeunit
 
 ###AnyMesh software is licensed with the MIT License
 
