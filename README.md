@@ -55,7 +55,7 @@ A: AnyMesh is still very young concept, and although it is fully functional, it 
 platforms.  See the CONTRIBUTE.md file for suggestions on contributing to development.
 #AnyMesh Node
 ## Please Read:
-0.3.0 has been released!  Multiple meshes on the same IP address, and even in the same process are now supported!  Please see the Changelog for complete list of changes!
+11/4/2014 - 0.4.0 has been released!  See CHANGELOG for details.
 
 Install:
 
