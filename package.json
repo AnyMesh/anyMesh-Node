@@ -11,7 +11,7 @@
       "type": "MIT"
     }
     ],
-
+    "main": "lib/AnyMesh.js",
     "description" : "A multi-platform, decentralized, auto-discover and auto-connect mesh networking and messaging API",
     "keywords" : [
       "mesh",

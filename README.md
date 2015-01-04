@@ -65,7 +65,7 @@ Install:
 ##Quickstart:
 Create AnyMesh singleton:
 
-    var AnyMesh = require("AnyMesh");
+    var AnyMesh = require("anymesh");
     var anyMesh = new AnyMesh();
 
 Handle messages received by defining callback function:
