@@ -1,3 +1,5 @@
+NOTE: AnyMesh is no longer under active development or support.
+
 #AnyMesh
 https://github.com/AnyMesh
 
@@ -147,4 +149,3 @@ AnyMesh uses nodeunit for its unit tests. See their README for instructions on h
 ###Any questions, comments, or suggestions, contact the Author:
 Dave Paul
 davepaul0@gmail.com
-
